@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,14 +68,54 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+    where T: PartialOrd + Copy
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		if list_a.start.is_none() {
+            return list_b;
         }
+
+        if list_b.start.is_none() {
+            return list_a;
+        }
+
+        let mut merged_list = LinkedList::new();
+        let mut p1 = list_a.start;
+        let mut p2 = list_b.start;
+
+        while let (Some(n1), Some(n2)) = (p1, p2) {
+            unsafe {
+                if (*n1.as_ptr()).val <= (*n2.as_ptr()).val {
+                    merged_list.add((*n1.as_ptr()).val);
+                    p1 = (*n1.as_ptr()).next;
+                } else {
+                    merged_list.add((*n2.as_ptr()).val);
+                    p2 = (*n2.as_ptr()).next;
+                }
+            }
+        }
+
+        while let Some(n1) = p1 {
+            unsafe {
+                merged_list.add((*n1.as_ptr()).val);
+                p1 = (*n1.as_ptr()).next;
+            }
+        }
+
+        while let Some(n2) = p2 {
+            unsafe {
+                merged_list.add((*n2.as_ptr()).val);
+                p2 = (*n2.as_ptr()).next;
+            }
+        }
+        
+        // Prevent memory leaks from the original lists
+        list_a.start = None;
+        list_a.end = None;
+        list_b.start = None;
+        list_b.end = None;
+
+        merged_list
 	}
 }
 
