@@ -40,10 +40,10 @@ fn fruit_basket(basket: &mut HashMap<Fruit, u32>) {
         // basket. Note that you are not allowed to put any type of fruit that's
         // already present!
         match basket.get(&fruit) {
-            Some(value) => {},
             None => {
                 basket.insert(fruit, 1);
             },
+            Some(_) => {}
         }
     }
 }
@@ -59,7 +59,7 @@ mod tests {
         basket.insert(Fruit::Mango, 2);
         basket.insert(Fruit::Lychee, 5);
 
-        return basket;
+        basket
     }
 
     #[test]
